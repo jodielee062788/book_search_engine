@@ -4,7 +4,7 @@ import { Form, Button, Alert } from "react-bootstrap";
 // import { createUser } from '../utils/API';
 import Auth from "../utils/auth";
 import { useMutation } from "@apollo/client";
-import { ADD_USER } from "../utils/mutations";
+import { ADD_USER } from "../utils/mutation";
 
 const SignupForm = () => {
   const [addUser] = useMutation(ADD_USER);
