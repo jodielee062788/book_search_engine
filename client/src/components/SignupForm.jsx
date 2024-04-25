@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 
-// import { createUser } from '../utils/API';
 import Auth from "../utils/auth";
 import { useMutation } from "@apollo/client";
 import { ADD_USER } from "../utils/mutation";
 
 const SignupForm = () => {
-  const [addUser] = useMutation(ADD_USER);
+  const [addUser, { error }] = useMutation(ADD_USER);
   // set initial form state
   const [userFormData, setUserFormData] = useState({
     username: "",
@@ -36,25 +35,19 @@ const SignupForm = () => {
 
     try {
       // const response = await createUser(userFormData);
-      const response = await addUser({
-        variables: {
-          username: userFormData.username,
-          email: userFormData.email,
-          password: userFormData.password,
-        },
+      // eslint-disable-next-line no-unused-vars
+      const { data } = await addUser({
+        variables: { ...userFormData }
       });
 
-      if (!response) {
+      if (error) {
         throw new Error("something went wrong!");
       }
 
       // Use Use mutation hook to pass in variables from mutations.js (import function from apollo hook and mutations/queries.js)
+      console.log(data);
+      Auth.login(data.addUser.token);
 
-      const { token, user } = response.data.addUser;
-      console.log(user);
-      Auth.login(token);
-
-      console.log("LOGGGIN IN WORKING")
     } catch (err) {
       console.error(err);
       setShowAlert(true);
