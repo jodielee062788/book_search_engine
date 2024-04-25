@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-
 import { Container, Card, Button, Row, Col } from "react-bootstrap";
 
 import Auth from "../utils/auth";
@@ -10,7 +9,7 @@ import { GET_ME } from "../utils/queries";
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
-  const [removeBook] = useMutation(REMOVE_BOOK);
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
   const userData = data?.me;
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
@@ -23,13 +22,12 @@ const SavedBooks = () => {
 
     try {
       // const response = await deleteBook(bookId, token);
-      const response = await removeBook({
-        variables: {
-          bookId: bookId,
-        },
+      // eslint-disable-next-line no-unused-vars
+      const { data } = await removeBook({
+          variables: { bookId }
       });
 
-      if (!response) {
+      if (error) {
         throw new Error("something went wrong!");
       }
 
