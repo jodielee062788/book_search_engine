@@ -8,7 +8,8 @@ import { useMutation } from "@apollo/client";
 import { SAVE_BOOK } from "../utils/mutation";
 
 const SearchBooks = () => {
-  const [saveBook] = useMutation(SAVE_BOOK);
+  // Use the useMutation hook to handle saveBook
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
@@ -17,8 +18,7 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
-  // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
+  // set up useEffect hook to save `savedBookIds` list to localStorage
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
@@ -68,21 +68,15 @@ const SearchBooks = () => {
     }
 
     try {
-      // const response = await saveBook(bookToSave, token);
-      const response = await saveBook({
+      // Use the saveBook mutation to handle saveBook using bookToSave as a variable
+      // eslint-disable-next-line no-unused-vars
+      const { data } = await saveBook({
         variables: {
-          input: {
-            authors: bookToSave.authors,
-            description: bookToSave.description,
-            title: bookToSave.title,
-            bookId: bookToSave.bookId,
-            image: bookToSave.image,
-            link: bookToSave.link,
-          },
-        },
+          bookInput: { ...bookToSave }
+        }
       });
 
-      if (!response) {
+      if (error) {
         throw new Error("something went wrong!");
       }
 
